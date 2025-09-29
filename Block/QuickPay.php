@@ -154,37 +154,4 @@ class QuickPay extends Template
 
         return $items;
     }
-
-    /**
-     * Escape HTML safely
-     *
-     * @param string $value
-     * @return string
-     */
-    public function escHtml($value)
-    {
-        return $this->escaper->escapeHtml($value);
-    }
-
-    /**
-     * Escape HTML attribute safely
-     *
-     * @param string $value
-     * @return string
-     */
-    public function escAttr($value)
-    {
-        return $this->escaper->escapeHtmlAttr($value);
-    }
-
-    /**
-     * Escape URL safely
-     *
-     * @param string $url
-     * @return string
-     */
-    public function escUrl($url)
-    {
-        return $this->escaper->escapeUrl($url);
-    }
 }
