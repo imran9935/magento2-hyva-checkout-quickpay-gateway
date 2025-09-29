@@ -8,11 +8,95 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <body>
+       <body>
         <referenceBlock name="checkout.payment.methods">
-            <block name="checkout.payment.method.quickpay"
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay" name="checkout.payment.method.quickpay_gateway"
                    as="quickpay_gateway"
-                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml"/>
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_gateway</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_klarna"
+                   as="quickpay_klarna"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_klarna</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_applepay"
+                   as="quickpay_applepay"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_applepay</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_mobilepay"
+                   as="quickpay_mobilepay"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_mobilepay</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_vipps"
+                   as="quickpay_vipps"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_vipps</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_paypal"
+                   as="quickpay_paypal"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_paypal</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_viabill"
+                   as="quickpay_viabill"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_viabill</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_swish"
+                   as="quickpay_swish"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_swish</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_trustly"
+                   as="quickpay_trustly"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_trustly</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_anyday"
+                   as="quickpay_anyday"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_anyday</argument>
+                </arguments>
+            </block>
+            <block class="Magebit\CheckoutQuickPayPayment\Block\QuickPay"
+                   name="checkout.payment.method.quickpay_googlepay"
+                   as="quickpay_googlepay"
+                   template="Magebit_CheckoutQuickPayPayment::component/payment/method/quickpay.phtml">
+                <arguments>
+                    <argument name="method_code" xsi:type="string">quickpay_googlepay</argument>
+                </arguments>
+            </block>
         </referenceBlock>
     </body>
 </page>
