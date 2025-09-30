@@ -18,15 +18,16 @@ $config = $block->getPaymentConfigByMethod($methodCode);
 
 $logos = $config['paymentLogo'] ?? [];
 $description = $config['description'] ?? '';
-
+$label = $config['label'] ?? '';
 ?>
+
 <?php /* The wire Payment Method directive is required to sit in the root DOM element. */ ?>
 
 <div class="quickpay-method" data-method="<?= $escaper->escapeHtmlAttr($methodCode) ?>">
     <?php if (!empty($logos)): ?>
         <div class="quickpay-logos flex items-center space-x-2">
             <?php foreach ($logos as $logo): ?>
-                <img src="<?= $escaper->escapeUrl($logo) ?>" alt="Payment Logo" class="h-8"/>
+                <img src="<?= $escaper->escapeUrl($logo) ?>" alt="<?= $escaper->escapeHtmlAttr($label) ?>" class="h-8"/>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>

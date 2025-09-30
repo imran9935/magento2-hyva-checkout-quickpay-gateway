@@ -4,44 +4,24 @@ declare(strict_types=1);
 
 namespace Magebit\CheckoutQuickPayPayment\Block;
 
-use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Asset\Repository as AssetRepository;
 use Magento\Store\Model\ScopeInterface;
+use QuickPay\Gateway\Model\Ui\ConfigProvider;
 
 class QuickPay extends Template
 {
-    public const CODE = 'quickpay_gateway';
-    public const CODE_KLARNA = 'quickpay_klarna';
-    public const CODE_APPLEPAY = 'quickpay_applepay';
-    public const CODE_MOBILEPAY = 'quickpay_mobilepay';
-    public const CODE_VIPPS = 'quickpay_vipps';
-    public const CODE_PAYPAL = 'quickpay_paypal';
-    public const CODE_VIABILL = 'quickpay_viabill';
-    public const CODE_SWISH = 'quickpay_swish';
-    public const CODE_TRUSTLY = 'quickpay_trustly';
-    public const CODE_ANYDAY = 'quickpay_anyday';
-    public const CODE_GOOGLEPAY = 'quickpay_googlepay';
-
-    private const XML_PATH_CARD_LOGO = 'payment/quickpay_gateway/cardlogos';
-    private const XML_PATH_DESCRIPTION = 'payment/%s/description';
-
     /**
      * @var ScopeConfigInterface
-     *
-    protected  $scopeConfig;
+     */
+    protected $scopeConfig;
 
     /**
      * @var AssetRepository
      */
-    protected  $assetRepo;
-
-    /**
-     * @var Escaper
-     */
-    protected $escaper;
+    protected $assetRepo;
 
     /**
      * QuickPay constructor.
@@ -49,98 +29,91 @@ class QuickPay extends Template
      * @param Context $context
      * @param ScopeConfigInterface $scopeConfig
      * @param AssetRepository $assetRepo
-     * @param Escaper $escaper       
-     * @param array $data
      */
     public function __construct(
         Context $context,
         ScopeConfigInterface $scopeConfig,
         AssetRepository $assetRepo,
-        Escaper $escaper,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->scopeConfig = $scopeConfig;
         $this->assetRepo = $assetRepo;
-        $this->escaper = $escaper;
     }
 
     /**
-     * Return the description for a payment method
+     * Get the description for a specific payment method
+     *
+     * @param string $methodCode
+     * @return string
      */
-    public function getDescription($methodCode)
+    public function getDescription(string $methodCode)
     {
         return (string)$this->scopeConfig->getValue(
-            sprintf(self::XML_PATH_DESCRIPTION, $methodCode),
+            sprintf(ConfigProvider::XML_PATH_DESCRIPTION, $methodCode),
             ScopeInterface::SCOPE_STORE
         );
     }
 
     /**
-     * Return payment logo and description based on selected payment method
+     * Return payment logo, label, and description based on selected payment method
+     *
+     * @param string $methodCode
+     * @return array
      */
-    public function getPaymentConfigByMethod($methodCode)
+    public function getPaymentConfigByMethod(string $methodCode)
     {
-        $logo = [];
         $description = $this->getDescription($methodCode);
+        $label = '';
+        $logo = [];
 
-        switch ($methodCode) {
-            case self::CODE:
-                $logo = $this->getQuickPayCardLogo();
-                break;
-
-            case self::CODE_KLARNA:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/klarna.svg')];
-                break;
-
-            case self::CODE_APPLEPAY:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/apple-pay.svg')];
-                break;
-
-            case self::CODE_MOBILEPAY:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/mobilepay_payment.png')];
-                break;
-
-            case self::CODE_VIPPS:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/vipps.png')];
-                break;
-
-            case self::CODE_PAYPAL:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/paypal.svg')];
-                break;
-
-            case self::CODE_VIABILL:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/viabill.png')];
-                break;
-
-            case self::CODE_SWISH:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/swish.png')];
-                break;
-
-            case self::CODE_TRUSTLY:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/trustly.svg')];
-                break;
-
-            case self::CODE_ANYDAY:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/anydaysplit.svg')];
-                break;
-
-            case self::CODE_GOOGLEPAY:
-                $logo = [$this->assetRepo->getUrl('QuickPay_Gateway::images/google-pay.svg')];
-                break;
+        if ($methodCode === ConfigProvider::CODE) {
+            $logo = $this->getQuickPayCardLogo();
+            $label = __('QuickPay'); // Default label for main gateway
+        } else {
+            $map = $this->getMethodLogoMap();
+            if (isset($map[$methodCode])) {
+                $logo = [$this->assetRepo->getUrl("QuickPay_Gateway::images/{$map[$methodCode]['logo']}")];
+                $label = $map[$methodCode]['label'];
+            }
         }
+
         return [
             'paymentLogo' => $logo,
-            'description' => $description
+            'description' => $description,
+            'label'       => $label,
+        ];
+    }
+
+    /**
+     * Get mapping of payment methods to their logo files and labels
+     *
+     * @return array
+     */
+    private function getMethodLogoMap()
+    {
+        return [
+            ConfigProvider::CODE_KLARNA    => ['logo' => 'klarna.svg', 'label' => 'Klarna'],
+            ConfigProvider::CODE_APPLEPAY  => ['logo' => 'apple-pay.svg', 'label' => 'Apple Pay'],
+            ConfigProvider::CODE_MOBILEPAY => ['logo' => 'mobilepay_payment.png', 'label' => 'MobilePay'],
+            ConfigProvider::CODE_VIPPS     => ['logo' => 'vipps.png', 'label' => 'Vipps'],
+            ConfigProvider::CODE_PAYPAL    => ['logo' => 'paypal.svg', 'label' => 'PayPal'],
+            ConfigProvider::CODE_VIABILL   => ['logo' => 'viabill.png', 'label' => 'ViaBill'],
+            ConfigProvider::CODE_SWISH     => ['logo' => 'swish.png', 'label' => 'Swish'],
+            ConfigProvider::CODE_TRUSTLY   => ['logo' => 'trustly.svg', 'label' => 'Trustly'],
+            ConfigProvider::CODE_ANYDAY    => ['logo' => 'anydaysplit.svg', 'label' => 'Anyday'],
+            ConfigProvider::CODE_GOOGLEPAY => ['logo' => 'google-pay.svg', 'label' => 'Google Pay'],
         ];
     }
 
     /**
      * Return logos for main QuickPay gateway
+     *
+     * @return array
      */
     protected function getQuickPayCardLogo()
     {
-        $cards = explode(',', (string)$this->scopeConfig->getValue(self::XML_PATH_CARD_LOGO, ScopeInterface::SCOPE_STORE));
+        $cards = explode(',', (string)$this->scopeConfig->getValue(ConfigProvider::XML_PATH_CARD_LOGO, ScopeInterface::SCOPE_STORE));
         $cardsSvg = ['maestro', 'mastercard', 'visa'];
         $items = [];
 
