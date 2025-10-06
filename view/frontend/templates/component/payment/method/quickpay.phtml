@@ -25,9 +25,9 @@ $label = $config['label'] ?? '';
 
 <div class="quickpay-method" data-method="<?= $escaper->escapeHtmlAttr($methodCode) ?>">
     <?php if (!empty($logos)): ?>
-        <div class="quickpay-logos flex items-center space-x-2">
+        <div class="quickpay-logos flex flex-wrap items-center gap-1.5">
             <?php foreach ($logos as $logo): ?>
-                <img src="<?= $escaper->escapeUrl($logo) ?>" alt="<?= $escaper->escapeHtmlAttr($label) ?>" class="h-8"/>
+                <img src="<?= $escaper->escapeUrl($logo) ?>" alt="<?= $escaper->escapeHtmlAttr($label) ?>" width="50" height="33"/>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
